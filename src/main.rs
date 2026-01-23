@@ -12,14 +12,29 @@ struct Note {
 // Path to the JSON file where notes are stored
 const NOTES_FILE: &str = "notas.json";
 
-// Loads notes from JSON file, returns empty vector if file doesn't exist or is corrupted
+// Loads notes from the JSON file and returns them as a vector
 fn load_notes() -> Vec<Note> {
-    // Try to read the file content as a string
+    // Try to read the file content as a String
+    // We use match because read_to_string returns a Result (Ok or Err)
+    // and we need to handle both cases: file exists vs file doesn't exist
     match fs::read_to_string(NOTES_FILE) {
-        // File exists: parse JSON to Vec<Note>, or return empty vec if parsing fails
+        // File read successfully: convert JSON string to Vec<Note>
+        // from_str adapts the JSON to our struct (works because Note has Deserialize)
+        // Rust infers the target type from the function return (Vec<Note>), so it uses Note as reference to map the data
+        // unwrap_or_else: if JSON is corrupted, return empty vector instead of crashing
         Ok(content) => serde_json::from_str(&content).unwrap_or_else(|_| vec![]),
-        // File doesn't exist: return empty vector
+        // File doesn't exist (first time opening the app): return empty vector
         Err(_) => vec![],
+    }
+}
+
+// Saves the notes vector to the JSON file (inverse of load_notes)
+fn save_notes(notes: &Vec<Note>) {
+    // Convert Vec<Note> to a formatted JSON string (works because Note has Serialize)
+    // if let Ok: only executes the block if the conversion succeeds
+    if let Ok(json) = serde_json::to_string_pretty(notes) {
+        // Write the JSON string to the file (creates or overwrites it)
+        let write = fs::write(NOTE_FILE, json);
     }
 }
 
