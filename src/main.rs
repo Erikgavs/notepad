@@ -29,12 +29,18 @@ fn load_notes() -> Vec<Note> {
 }
 
 // Saves the notes vector to the JSON file (inverse of load_notes)
+// &Vec<Note>: receives a reference (borrow) to the vector, so it can read it without taking ownership
+// Without &: the function would take ownership and the vector would be unusable after calling this function
 fn save_notes(notes: &Vec<Note>) {
+    // in parentesis cause the function needs data
     // Convert Vec<Note> to a formatted JSON string (works because Note has Serialize)
-    // if let Ok: only executes the block if the conversion succeeds
+    // if let Ok(json) = ...: "if converting to JSON succeeds, store the result in 'json' and run the block"
+    // If it fails (Err), it simply does nothing (doesn't crash)
     if let Ok(json) = serde_json::to_string_pretty(notes) {
         // Write the JSON string to the file (creates or overwrites it)
-        let write = fs::write(NOTE_FILE, json);
+        // let _ = : fs::write returns a Result, and Rust forces you to acknowledge it
+        // _ means "I don't care if it failed or not, just discard the response"
+        let _ = fs::write(NOTES_FILE, json);
     }
 }
 

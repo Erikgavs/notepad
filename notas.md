@@ -493,6 +493,78 @@ Archivo en disco:                   En memoria (Rust):
 
 ---
 
+## POR QUE `&` EN LOS PARAMETROS (REFERENCIAS)
+
+Cuando una funcion recibe un parametro, puede recibirlo de dos formas:
+
+**Sin `&` (ownership/adueñarse):**
+```rust
+fn save_notes(notes: Vec<Note>) { ... }
+```
+La funcion se **adueña** del vector. Despues de llamarla, no podrias usar `notes` en el resto del codigo porque se "movio" dentro de la funcion.
+
+**Con `&` (referencia/prestamo):**
+```rust
+fn save_notes(notes: &Vec<Note>) { ... }
+```
+La funcion solo lo **toma prestado** para leerlo. Cuando termina, el vector sigue siendo tuyo.
+
+### Analogia
+
+| | Sin `&` | Con `&` |
+|---|---------|---------|
+| Que pasa | Le das tu cuaderno y no te lo devuelve | Le dejas ver tu cuaderno pero tu lo sigues teniendo |
+| Despues de llamar la funcion | No puedes usar el vector | Sigues usando el vector normal |
+
+### Como se llama
+
+```rust
+save_notes(&notes.read());
+//         ^ el & pasa una referencia (prestamo)
+```
+
+---
+
+## POR QUE `load_notes()` NO TIENE PARAMETROS Y `save_notes()` SI
+
+| Funcion | Recibe | Devuelve | Por que |
+|---------|--------|----------|---------|
+| `load_notes()` | Nada | `Vec<Note>` | Lee del archivo y te da los datos |
+| `save_notes(notes)` | `&Vec<Note>` | Nada | Tu le das los datos y ella los guarda |
+
+**`load_notes()`** — no necesita que le des nada. Ella sola sabe de donde sacar los datos (lee el archivo). Su trabajo es **producir** datos y devolvertelos.
+
+```
+load_notes():  archivo → te devuelve datos
+```
+
+**`save_notes(notes)`** — necesita que le **pases** los datos que quieres guardar. Ella no sabe que notas tienes, tu se las das. No devuelve nada porque su trabajo es solo escribir al archivo.
+
+```
+save_notes():  tu le das datos → archivo
+```
+
+> Son inversas: una produce datos, la otra los consume.
+
+---
+
+## QUE ES `let _ =`
+
+`fs::write()` devuelve una respuesta: "lo hice bien" o "fallo".
+
+Rust te **obliga** a hacer algo con esa respuesta. No te deja ignorarla sin mas.
+
+```rust
+fs::write(NOTES_FILE, json);        // WARNING: "hay un Result que no estas manejando"
+let _ = fs::write(NOTES_FILE, json); // OK: "recibido, no me importa"
+```
+
+`let _ =` es como decir: **"ok, recibido, no me importa si fallo o no."**
+
+> `_` no es una variable real. Nadie puede usarla despues. Es solo la forma de decir "lo ignoro conscientemente."
+
+---
+
 ## COMO SABE `from_str` QUE STRUCT USAR
 
 Rust lo vincula por el **tipo de retorno** de la funcion:
