@@ -584,3 +584,38 @@ let notas: Vec<Note> = serde_json::from_str(&content);
 ```
 
 > **`from_str` sabe que debe crear `Vec<Note>` porque la funcion dice que devuelve `Vec<Note>`. Rust conecta los puntos automaticamente.**
+
+---
+
+## Integracion de load_notes() con use_signal
+
+El vector sigue siendo la estructura principal en memoria. `load_notes()` simplemente devuelve un `Vec<Note>`, igual que cuando lo creabas a mano con datos hardcodeados.
+
+```rust
+// Antes: vector con datos hardcodeados
+let mut notes = use_signal(|| {
+    vec![Note {
+        title: "Nota de ejemplo".to_string(),
+        content: "Contenido de ejemplo!".to_string(),
+    }]
+});
+
+// Ahora: vector con datos del JSON
+let mut notes = use_signal(|| load_notes());
+```
+
+El resultado es el mismo tipo (`Vec<Note>`), solo cambia el origen de los datos. Si el archivo no existe, `load_notes()` devuelve un `vec![]` vacio.
+
+## Persistencia: como se conecta el vector con el JSON
+
+El JSON solo interviene en **dos momentos**:
+
+1. **Al abrir la app** — `load_notes()` lee el archivo y llena el vector.
+2. **Al añadir una nota** — `save_notes()` escribe el vector completo al archivo.
+
+```rust
+notes.write().push(nota);       // añade la nota al vector en memoria
+save_notes(&notes.read());      // guarda TODO el vector al archivo JSON
+```
+
+Durante la ejecucion, todo funciona con el vector en memoria (lees con `.read()`, modificas con `.write().push()`). El JSON es solo el mecanismo de **persistencia entre sesiones** — para que las notas no se pierdan al cerrar la app.

@@ -39,7 +39,8 @@ fn save_notes(notes: &Vec<Note>) {
     if let Ok(json) = serde_json::to_string_pretty(notes) {
         // Write the JSON string to the file (creates or overwrites it)
         // let _ = : fs::write returns a Result, and Rust forces you to acknowledge it
-        // _ means "I don't care if it failed or not, just discard the response"
+        // _ means "I don't care if it
+        //  failed or not, just discard the response"
         let _ = fs::write(NOTES_FILE, json);
     }
 }
@@ -51,12 +52,9 @@ fn main() {
 fn app() -> Element {
     // Reactive signal that holds a mutable vector of notes
     // use_signal creates state that triggers re-renders when modified
-    let mut notes = use_signal(|| {
-        vec![Note {
-            title: "Nota de ejemplo".to_string(),
-            content: "Contenido de ejemplo!".to_string(),
-        }]
-    });
+    // load_notes() copies notes from the JSON file into memory and forgets about the file
+    // From this point on, everything works with the in-memory vector
+    let mut notes = use_signal(|| load_notes());
 
     let mut show_popup = use_signal(|| false); // Controls popup visibility, starts hidden
     let mut new_title = use_signal(String::new); // Stores the title input for a new note
@@ -73,10 +71,12 @@ fn app() -> Element {
                 padding: "20",
                 spacing: "10",
 
-
+                // NOTES DISPLAYED
                 // Iterates over the notes vector and renders each one
                 // .read() gives immutable access, .iter() creates an iterator
-                for note in notes.read().iter() {
+                // .enumerate() adds a position number (0, 1, 2...) to each element
+                // (position, note) destructures the tuple: position = index, note = the Note
+                for (position, note) in notes.read().iter().enumerate() {
                     rect {
                         background: "rgb(211, 211, 211)", // light gray
                         padding: "10",
@@ -88,6 +88,16 @@ fn app() -> Element {
                         }
 
                         label{ "{note.content}" }
+
+                        Button {
+                            onclick: move |_| {
+                                notes.write().remove(position);
+                                save_notes(&notes.read());
+                            },
+                            label {
+                                "Eliminar nota"
+                            }
+                        }
                     }
                 }
             }
@@ -145,7 +155,7 @@ fn app() -> Element {
 
                         // Save button - adds the new note to the vector
                         Button {
-                            onpress: move |_| {
+                            onclick: move |_| {
                                 // Create a new Note instance with the input values
                                 let nota = Note {
                                     title: new_title.read().clone(),
@@ -155,6 +165,7 @@ fn app() -> Element {
                                 // .write() unlocks the signal for modification (like opening a box)
                                 // .push(nota) inserts the note at the end of the vector
                                 notes.write().push(nota);
+                                save_notes(&notes.read());
                                 // Close the popup after saving
                                 show_popup.set(false);
                             },
