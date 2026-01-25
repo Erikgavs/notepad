@@ -95,7 +95,7 @@ fn app() -> Element {
                                 save_notes(&notes.read());
                             },
                             label {
-                                "Eliminar nota"
+                                "Remove"
                             }
                         }
                     }
@@ -109,7 +109,7 @@ fn app() -> Element {
                 Button {
                     onclick: move |_| show_popup.set(true),
                     label {
-                        " Nueva nota "
+                        " New note "
                     }
                 }
             }
