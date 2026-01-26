@@ -1,6 +1,6 @@
 use std::fs;
 
-use freya::{elements::rect::cross_align, prelude::*};
+use freya::{elements::{label, rect::cross_align}, prelude::*};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize)] // Enables the clone() method for Note instances
