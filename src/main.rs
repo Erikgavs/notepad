@@ -46,7 +46,16 @@ fn save_notes(notes: &Vec<Note>) {
 }
 
 fn main() {
-    launch(app);
+    // launch_cfg -> custom config of the window (function)
+    launch_cfg(
+        app,
+        // LaunchConfig -> config struct, no parameters <()>  ::new() -> new instance
+        LaunchConfig::<()>::new()
+            // size of the window width/height
+            .with_size(500.0, 300.0) // with size, literaly, "i want a window with_size"
+            // title of the window
+            .with_title("Notepad")
+    );
 }
 
 fn app() -> Element {
@@ -66,6 +75,14 @@ fn app() -> Element {
             height: "100%",
             main_align: "end",    // Pushes content to the bottom
             cross_align: "center", // Centers content horizontally
+
+            if notes.read().is_empty(){
+                label {
+                    font_size: "30",
+                    "Welcome, make your first note!"
+                }
+            }
+
 
             rect {
                 padding: "20",
