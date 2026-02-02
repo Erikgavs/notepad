@@ -1,6 +1,10 @@
+#![windows_subsystem = "windows"]
 use std::fs;
 
-use freya::{elements::{label, rect::cross_align}, prelude::*};
+use freya::{
+    elements::{label, rect::cross_align},
+    prelude::*,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize)] // Enables the clone() method for Note instances
@@ -54,7 +58,7 @@ fn main() {
             // size of the window width/height
             .with_size(500.0, 300.0) // with size, literaly, "i want a window with_size"
             // title of the window
-            .with_title("Notepad")
+            .with_title("Notepad"),
     );
 }
 
