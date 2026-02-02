@@ -1,0 +1,27 @@
+# Nombre del workflow, aparece en la pestaña Actions de GitHub
+name: Build Windows
+
+# Solo se ejecuta manualmente desde GitHub Actions
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    # Usa una maquina virtual Windows proporcionada por GitHub
+    runs-on: windows-latest
+    steps:
+      # Clona el repositorio en la maquina virtual
+      - uses: actions/checkout@v4
+
+      # Instala el toolchain de Rust estable
+      - uses: dtolnay/rust-toolchain@stable
+
+      # Compila la aplicacion en modo release (optimizado)
+      - name: Build
+        run: cargo build --release
+
+      # Sube el .exe como artifact descargable desde Actions
+      - uses: actions/upload-artifact@v4
+        with:
+          name: notepad_app_windows
+          path: target/release/notepad_app.exe
