@@ -1,5 +1,7 @@
+// ADD ANIMATED POSITION!!!!
+
 #![windows_subsystem = "windows"]
-use std::fs;
+use std::{fs, time::Duration};
 
 use freya::{
     elements::{label, rect::cross_align},
@@ -81,14 +83,19 @@ fn app() -> Element {
             main_align: "end",    // Pushes content to the bottom
             cross_align: "center", // Centers content horizontally
 
-            if notes.read().is_empty(){
-                label {
-                    font_size: "30",
-                    "Welcome, make your first note!"
+            rect {
+                main_align: "center",
+                cross_align: "center",
+                height: "50",
+                width: "200",
+
+                if notes.read().is_empty(){
+                    label {
+                        font_size: "30",
+                        "Welcome, make your first note!"
+                    }
                 }
             }
-
-
 
             ScrollView{
                 rect {
@@ -241,3 +248,11 @@ fn app() -> Element {
         }
     )
 }
+
+
+//   if notes.read().is_empty(){
+//    label {
+//        font_size: "30",
+//        "Welcome, make your first note!"
+//    }
+//}
