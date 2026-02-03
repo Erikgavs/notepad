@@ -56,7 +56,7 @@ fn main() {
         // LaunchConfig -> config struct, no parameters <()>  ::new() -> new instance
         LaunchConfig::<()>::new()
             // size of the window width/height
-            .with_size(550.0, 350.0) // with size, literaly, "i want a window with_size"
+            .with_size(500.0, 300.0) // with size, literaly, "i want a window with_size"
             // title of the window
             .with_title("Notepad"),
     );
@@ -72,7 +72,6 @@ fn app() -> Element {
     let mut show_popup = use_signal(|| false); // Controls popup visibility, starts hidden
     let mut new_title = use_signal(String::new); // Stores the title input for a new note
     let mut new_content = use_signal(String::new); // Stores the content input for a new note
-    let mut show_error = use_signal(|| false);
 
     rsx!(
         rect {
@@ -89,43 +88,35 @@ fn app() -> Element {
             }
 
 
+            rect {
+                padding: "20",
+                spacing: "10",
 
-            ScrollView{
-                rect {
-                    padding: "20",
-                    spacing: "10",
-                    //border: "2 solid black",
-                    direction: "vertical", // change when needed
-                    margin: "25 0 0 0",
+                // NOTES DISPLAYED
+                // Iterates over the notes vector and renders each one
+                // .read() gives immutable access, .iter() creates an iterator
+                // .enumerate() adds a position number (0, 1, 2...) to each element
+                // (position, note) destructures the tuple: position = index, note = the Note
+                for (position, note) in notes.read().iter().enumerate() {
+                    rect {
+                        background: "rgb(211, 211, 211)", // light gray
+                        padding: "10",
+                        corner_radius: "5",
 
-                    // NOTES DISPLAYED
-                    // Iterates over the notes vector and renders each one
-                    // .read() gives immutable access, .iter() creates an iterator
-                    // .enumerate() adds a position number (0, 1, 2...) to each element
-                    // (position, note) destructures the tuple: position = index, note = the Note
-                    for (position, note) in notes.read().iter().enumerate() {
-                        rect {
-                            background: "rgb(211, 211, 211)", // light gray
-                            padding: "10",
-                            corner_radius: "5",
+                        label {
+                            font_weight: "bold",
+                            "{note.title}"
+                        }
 
+                        label{ "{note.content}" }
+
+                        Button {
+                            onclick: move |_| {
+                                notes.write().remove(position);
+                                save_notes(&notes.read());
+                            },
                             label {
-                                font_weight: "bold",
-                                "{note.title}"
-                            }
-
-                            label{ "{note.content}" }
-                            rect {
-                                margin: "10 0 0 0",
-                                Button {
-                                    onclick: move |_| {
-                                        notes.write().remove(position);
-                                        save_notes(&notes.read());
-                                    },
-                                    label {
-                                        "Remove"
-                                    }
-                                }
+                                "Remove"
                             }
                         }
                     }
@@ -183,26 +174,9 @@ fn app() -> Element {
                             }
                         }
 
-                        if *show_error.read() { // when the user did not fill the fields
-                            label {
-                                color: "red",
-                                "Fill the fields!!!"
-                            }
-
-                        }
-
                         // Save button - adds the new note to the vector
                         Button {
                             onclick: move |_| {
-                                if new_title.read().is_empty() {
-                                    show_error.set(true);
-                                    return;
-                                }
-
-                                if new_content.read().is_empty() {
-                                    show_error.set(true);
-                                    return;
-                                }
                                 // Create a new Note instance with the input values
                                 let nota = Note {
                                     title: new_title.read().clone(),
@@ -213,21 +187,6 @@ fn app() -> Element {
                                 // .push(nota) inserts the note at the end of the vector
                                 notes.write().push(nota);
                                 save_notes(&notes.read());
-
-                                if new_title.read().is_empty() {
-                                    show_error.set(true);
-                                    return;
-                                }
-
-                                if new_content.read().is_empty(){
-                                    show_error.set(true);
-                                    return;
-                                }
-
-                                // remove the text in the input after submitting
-                                new_content.set(String::new());
-                                new_title.set(String::new());
-
                                 // Close the popup after saving
                                 show_popup.set(false);
                             },
