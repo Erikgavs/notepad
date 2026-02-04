@@ -16,6 +16,7 @@ struct Note {
 
 const NOTES_FILE: &str = "notas.json";
 
+// loading notes function
 fn load_notes() -> Vec<Note> {
     match fs::read_to_string(NOTES_FILE) {
         Ok(content) => serde_json::from_str(&content).unwrap_or_else(|_| vec![]),
@@ -23,12 +24,14 @@ fn load_notes() -> Vec<Note> {
     }
 }
 
+//Saving notes function
 fn save_notes(notes: &Vec<Note>) {
     if let Ok(json) = serde_json::to_string(notes) {
         let _ = fs::write(NOTES_FILE, json);
     }
 }
 
+// Window configuration
 fn main() {
     launch_cfg(
         app,
@@ -38,6 +41,7 @@ fn main() {
     );
 }
 
+// important variables
 fn app() -> Element {
     let mut notes = use_signal(|| load_notes());
     let mut show_popup = use_signal(|| false);
@@ -46,6 +50,8 @@ fn app() -> Element {
     let mut show_error = use_signal(|| false);
 
     rsx!(
+
+        // "Welcome" screen (when there are no notes)
         if notes.read().is_empty() {
 
             rect {
@@ -71,6 +77,7 @@ fn app() -> Element {
             }
         } else {
 
+            // When there are notes
             rect {
                 width: "100%",
                 height: "100%",
@@ -84,6 +91,8 @@ fn app() -> Element {
                         direction: "vertical",
                         margin: "25 0 0 0",
 
+
+                        // Displayed notes
                         for (position, note) in notes.read().iter().enumerate() {
                             rect {
                                 background: "rgb(221, 211, 211)",
@@ -114,6 +123,7 @@ fn app() -> Element {
                     }
                 }
 
+                // New note button
                 rect {
                     margin: "0 0 5 0",
                     Button {
@@ -125,6 +135,8 @@ fn app() -> Element {
                 }
             }
         }
+
+        // POPUP config
         if *show_popup.read() {
             Popup {
                 oncloserequest: move |_| show_popup.set(false),
@@ -156,6 +168,7 @@ fn app() -> Element {
                         }
                     }
 
+                    // ERROR config
                     if *show_error.read() {
                         label {
                             color: "red",
