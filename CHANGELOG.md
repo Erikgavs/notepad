@@ -1,4 +1,4 @@
-## [Unreleased] 1.3
+## [Unreleased] 1.2
 
 ### Added
 - ScrollView to make more interactive the app and to not "lose" notes
