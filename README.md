@@ -5,7 +5,7 @@
 ![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)
 ![Freya](https://img.shields.io/badge/Freya-GUI-blue?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS-yellow?style=for-the-badge&logo=linux&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows-yellow?style=for-the-badge&logo=linux&logoColor=white)
 
 **A simple, lightweight, and fast note-taking application built with Rust and Freya.**
 
@@ -19,7 +19,7 @@
 
 Notepad App is a minimalist desktop application designed for quick and efficient note-taking. Built entirely in Rust, it offers exceptional performance and a clean, distraction-free interface. Your notes are automatically saved in JSON format, ensuring your data is always secure and easily accessible.
 
-> **Note:** Currently, this application is compatible with **Linux** and **macOS**. Windows support is actively being developed and will be available in future releases.
+> **Note:** This application is compatible with **Linux**, **macOS**, and **Windows**.
 
 ---
 
@@ -30,6 +30,7 @@ Notepad App is a minimalist desktop application designed for quick and efficient
 | **Create Notes** | Add new notes with custom title and content through an intuitive popup dialog |
 | **Delete Notes** | Remove unwanted notes with a single click |
 | **Auto-Save** | All changes are automatically persisted to a local JSON file |
+| **Welcome Screen** | Friendly welcome message displayed when no notes exist |
 | **Lightweight** | Minimal resource usage thanks to Rust's efficiency |
 | **Fast Startup** | Launch instantly with no loading delays |
 | **Clean UI** | Distraction-free interface focused on productivity |
@@ -53,13 +54,13 @@ Notepad App is a minimalist desktop application designed for quick and efficient
 |----------|--------|
 | Linux | ✅ Fully Supported |
 | macOS | ✅ Fully Supported |
-| Windows | 🚧 In Development |
+| Windows | ✅ Fully Supported |
 
 ### Prerequisites
 
 - **For running the binary:**
-  - Linux or macOS operating system
-  - GUI environment (X11/Wayland on Linux, native on macOS)
+  - Linux, macOS, or Windows operating system
+  - GUI environment (X11/Wayland on Linux, native on macOS/Windows)
 
 - **For building from source:**
   - [Rust](https://www.rust-lang.org/tools/install) toolchain (Edition 2024)
@@ -194,7 +195,6 @@ Contributions are welcome! Here's how you can help:
 
 ### Ideas for Contribution
 
-- [ ] Windows compatibility
 - [ ] Note search functionality
 - [ ] Categories/Tags for notes
 - [ ] Dark/Light theme toggle
@@ -206,7 +206,6 @@ Contributions are welcome! Here's how you can help:
 
 ## 🐛 Known Issues
 
-- Windows support is not yet available
 - Notes are stored locally (no cloud sync yet)
 
 ---
