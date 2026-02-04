@@ -212,10 +212,3 @@ fn app() -> Element {
         }
     )
 }
-
-//   if notes.read().is_empty(){
-//    label {
-//        font_size: "30",
-//        "Welcome, make your first note!"
-//    }
-//}
