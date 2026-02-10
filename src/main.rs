@@ -201,6 +201,7 @@ fn app() -> Element {
                             new_content.set(String::new());
 
                             show_popup.set(false);
+                            show_error.set(false);
                         },
 
                         label {
