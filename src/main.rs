@@ -15,7 +15,10 @@ struct Note {
 }
 
 fn notes_path() -> PathBuf {
-    dirs::data_dir().unwrap_or_else(|| PathBuf::from(".")).join("notepad").join("notes.json")
+    dirs::data_dir()
+        .unwrap_or_else(|| PathBuf::from("."))
+        .join("notepad")
+        .join("notes.json")
 }
 
 // loading notes function
@@ -26,11 +29,15 @@ fn load_notes() -> Vec<Note> {
     }
 }
 
-
-// IN PROGRESS CLAUDE --RESUME
 //Saving notes function
 fn save_notes(notes: &Vec<Note>) {
-    if let Ok(json) = serde_json::to_string(notes)
+    // if result is ok => (if transforms notes.json into a string)
+    // -> this key is from the if {
+    if let Ok(json) = serde_json::to_string(notes) {
+        let path = notes_path();
+        let _ = fs::create_dir_all(path.parent().unwrap());
+        let _ = fs::write(path, json);
+    }
 }
 
 // Window configuration
