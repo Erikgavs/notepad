@@ -1,5 +1,5 @@
 #![windows_subsystem = "windows"]
-use std::{fs, time::Duration};
+use std::{fs, path::PathBuf};
 
 use freya::{
     elements::{label, rect::cross_align},
@@ -14,11 +14,16 @@ struct Note {
     content: String,
 }
 
-const NOTES_FILE: &str = "notas.json";
+fn notes_path() -> PathBuf {
+    dirs::data_dir()
+        .unwrap_or_else(|| PathBuf::from("."))
+        .join("notepad")
+        .join("notes.json")
+}
 
 // loading notes function
 fn load_notes() -> Vec<Note> {
-    match fs::read_to_string(NOTES_FILE) {
+    match fs::read_to_string(notes_path()) {
         Ok(content) => serde_json::from_str(&content).unwrap_or_else(|_| vec![]),
         Err(_) => vec![],
     }
@@ -26,8 +31,12 @@ fn load_notes() -> Vec<Note> {
 
 //Saving notes function
 fn save_notes(notes: &Vec<Note>) {
+    // if result is ok => (if transforms notes.json into a string)
+    // -> this key is from the if {
     if let Ok(json) = serde_json::to_string(notes) {
-        let _ = fs::write(NOTES_FILE, json);
+        let path = notes_path();
+        let _ = fs::create_dir_all(path.parent().unwrap());
+        let _ = fs::write(path, json);
     }
 }
 
